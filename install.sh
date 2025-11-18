@@ -32,3 +32,26 @@ else
 fi
 
 echo "✅ Dotfiles installation complete!"
+
+
+if [ -n "$GIST_ADDITIONAL_SETUP_URL" ] && [ -d "/workspaces/github" ]; then
+  ADDITIONAL_SETUP_DIR="$HOME/.additional-setup"
+
+  echo "➕ Cloning additional setup from gist..."
+  if gh gist clone "$GIST_ADDITIONAL_SETUP_URL" "$ADDITIONAL_SETUP_DIR" 2>/dev/null; then
+    echo "✅ Gist with additional setup cloned"
+
+    if [ -f "$ADDITIONAL_SETUP_DIR/additional-setup.sh" ]; then
+      echo "➕ Running additional setup..."
+      bash "$ADDITIONAL_SETUP_DIR/additional-setup.sh"
+      echo "✅ Additional setup completed succesfully."
+    else
+      echo "⚠️ Could not run additional setup script from gist."
+    fi
+
+  else
+    echo "⚠️ Could not run private setup, gist may not be accessible"
+  fi
+else
+  echo "ℹ️ No additional setup is available for this codespace."
+fi
