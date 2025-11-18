@@ -31,18 +31,4 @@ else
     echo "ℹ️  iTerm2 Shell Integration already installed"
 fi
 
-# Symlink dotfiles (force overwrite any existing files)
-echo "🔗 Creating symlinks for dotfiles..."
-rm -f "$HOME/.zshrc"
-ln -sf "$HOME/dotfiles/.zshrc" "$HOME/.zshrc"
-rm -f "$HOME/.bashrc"
-ln -sf "$HOME/dotfiles/.bashrc" "$HOME/.bashrc"
-
-# Verify symlinks were created
-if [ -L "$HOME/.zshrc" ]; then
-    echo "✅ .zshrc symlinked successfully"
-else
-    echo "❌ Failed to create .zshrc symlink"
-fi
-
 echo "✅ Dotfiles installation complete!"
