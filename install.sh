@@ -13,13 +13,13 @@ else
     echo "ℹ️  zsh is already the default shell"
 fi
 
-# Install Oh My Zsh if not already installed
-if [ ! -d "$HOME/.oh-my-zsh" ]; then
-    echo "📦 Installing Oh My Zsh..."
-    RUNZSH=no KEEP_ZSHRC=yes sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-    echo "✅ Oh My Zsh installed"
+# Install Antigen if not already installed
+if [ ! -f "$HOME/antigen.zsh" ]; then
+    echo "📦 Installing Antigen..."
+    curl -L git.io/antigen > "$HOME/antigen.zsh"
+    echo "✅ Antigen installed"
 else
-    echo "ℹ️  Oh My Zsh already installed"
+    echo "ℹ️  Antigen already installed"
 fi
 
 # Install iTerm2 Shell Integration
