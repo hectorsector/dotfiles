@@ -4,6 +4,18 @@ set -e
 
 echo "🚀 Running dotfiles installation..."
 
+# Determine the dotfiles directory
+DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Symlink .zshrc from dotfiles repo to home directory
+echo "📝 Installing .zshrc..."
+if [ -f "$DOTFILES_DIR/.zshrc" ]; then
+    ln -sf "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
+    echo "✅ .zshrc symlinked"
+else
+    echo "⚠️  .zshrc not found in dotfiles directory"
+fi
+
 # Change default shell to zsh first
 if [ "$SHELL" != "$(which zsh)" ]; then
     echo "🔧 Setting zsh as default shell..."
@@ -25,7 +37,7 @@ fi
 # Install iTerm2 Shell Integration
 echo "📦 Installing iTerm2 Shell Integration..."
 if [ ! -f "$HOME/.iterm2_shell_integration.zsh" ]; then
-    curl -L https://iterm2.com/shell_integration/install_shell_integration_and_utilities.sh | bash
+    SHELL=$(which zsh) curl -L https://iterm2.com/shell_integration/install_shell_integration_and_utilities.sh | bash
     echo "✅ iTerm2 Shell Integration installed"
 else
     echo "ℹ️  iTerm2 Shell Integration already installed"
