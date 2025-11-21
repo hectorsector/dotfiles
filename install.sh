@@ -37,7 +37,7 @@ fi
 # Install iTerm2 Shell Integration
 echo "📦 Installing iTerm2 Shell Integration..."
 if [ ! -f "$HOME/.iterm2_shell_integration.zsh" ]; then
-    SHELL=$(which zsh) curl -L https://iterm2.com/shell_integration/install_shell_integration_and_utilities.sh | bash
+    curl -L https://iterm2.com/shell_integration/zsh -o "$HOME/.iterm2_shell_integration.zsh"
     echo "✅ iTerm2 Shell Integration installed"
 else
     echo "ℹ️  iTerm2 Shell Integration already installed"
