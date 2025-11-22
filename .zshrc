@@ -1,8 +1,8 @@
 # Load Antigen
 source ~/antigen.zsh
 
-# Load the oh-my-zsh's library (this gives you the same base functionality)
-antigen use oh-my-zsh
+# Theme
+antigen use fino-time
 
 # Bundles from the default repo (robbyrussell's oh-my-zsh)
 antigen bundle git
