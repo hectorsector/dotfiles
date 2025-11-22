@@ -65,22 +65,4 @@ else
   echo "ℹ️ No additional setup is available for this codespace."
 fi
 
-# Configure default directory for Codespaces
-echo "🔧 Configuring default directory for Codespaces..."
-
-# Add directory change to .zshrc if not already present
-if ! grep -q "cd /workspaces/copilot-code-review-agent" "$HOME/.zshrc" 2>/dev/null; then
-  cat >> "$HOME/.zshrc" << 'EOF'
-
-# Auto-change to copilot-code-review-agent directory in Codespaces
-if [ -d "/workspaces/copilot-code-review-agent" ]; then
-    cd /workspaces/copilot-code-review-agent
-fi
-EOF
-
-  echo "✅ Default directory configured"
-else
-  echo "ℹ️ Default directory already configured"
-fi
-
 echo "✅ Dotfiles installation complete!"
