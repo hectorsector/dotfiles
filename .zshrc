@@ -1,8 +1,8 @@
 # Load Antigen
 source ~/antigen.zsh
 
-# Theme
-antigen use fino-time
+# Load the oh-my-zsh's library (this gives you the same base functionality)
+antigen use oh-my-zsh
 
 # Bundles from the default repo (robbyrussell's oh-my-zsh)
 antigen bundle git
@@ -13,7 +13,7 @@ antigen bundle jsontools
 # antigen bundle zsh-users/zsh-autosuggestions
 
 # Load the theme
-antigen theme intheloop
+antigen theme fino-time
 
 # Tell Antigen that you're done
 antigen apply
