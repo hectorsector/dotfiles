@@ -34,6 +34,17 @@ else
     echo "ℹ️  Antigen already installed"
 fi
 
+# Install fzf for command and history search
+if command -v fzf >/dev/null 2>&1; then
+    echo "ℹ️  fzf is already installed"
+elif command -v brew >/dev/null 2>&1; then
+    echo "📦 Installing fzf..."
+    brew install fzf
+    echo "✅ fzf installed"
+else
+    echo "⚠️  Homebrew is not installed; skipping fzf installation"
+fi
+
 # Install iTerm2 Shell Integration
 echo "📦 Installing iTerm2 Shell Integration..."
 if [ ! -f "$HOME/.iterm2_shell_integration.zsh" ]; then
