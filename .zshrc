@@ -20,6 +20,9 @@ antigen apply
 
 # Personal configs
 
+# History search
+bindkey '^R' history-incremental-search-backward
+
 # Homebrew
 [ -f "/opt/homebrew/bin/brew" ] && eval "$(/opt/homebrew/bin/brew shellenv)"
 
@@ -32,7 +35,13 @@ export NVM_DIR="$HOME/.nvm"
 command -v direnv &> /dev/null && eval "$(direnv hook zsh)"
 
 # Fuzzy search
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+if [ -f ~/.fzf.zsh ]; then
+  source ~/.fzf.zsh
+elif command -v brew &> /dev/null && [ -f "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh" ]; then
+  source "$(brew --prefix)/opt/fzf/shell/key-bindings.zsh"
+  source "$(brew --prefix)/opt/fzf/shell/completion.zsh"
+fi
+(( $+functions[fzf-history-widget] )) && bindkey '^R' fzf-history-widget
 export PATH="node_modules/.bin:$PATH"
 
 # Pagers

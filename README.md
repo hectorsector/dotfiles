@@ -35,6 +35,10 @@ Shell integration enables:
 - `⌘←` - Beginning of line
 - `⌘→` - End of line
 
+### fzf History Search
+The setup script installs fzf through Homebrew when available. In Zsh, `Ctrl+R`
+opens fzf's interactive command-history search.
+
 ### Oh My Zsh Plugins
 - `git` - Git aliases and completions
 - `jsontools` - JSON formatting utilities
