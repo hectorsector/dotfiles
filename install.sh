@@ -54,6 +54,14 @@ else
     echo "ℹ️  iTerm2 Shell Integration already installed"
 fi
 
+# Load iTerm2 preferences from the dotfiles repo (macOS only)
+if [ "$(uname)" = "Darwin" ] && [ -f "$DOTFILES_DIR/iterm2/com.googlecode.iterm2.plist" ]; then
+    echo "🔧 Configuring iTerm2 to load preferences from dotfiles..."
+    defaults write com.googlecode.iterm2 PrefsCustomFolder -string "$DOTFILES_DIR/iterm2"
+    defaults write com.googlecode.iterm2 LoadPrefsFromCustomFolder -bool true
+    echo "✅ iTerm2 preferences configured (restart iTerm2 to apply)"
+fi
+
 if [ -n "$GIST_ADDITIONAL_SETUP_URL" ] && [ -d "/workspaces/github" ]; then
   ADDITIONAL_SETUP_DIR="$HOME/.additional-setup"
 
