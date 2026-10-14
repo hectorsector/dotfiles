@@ -60,3 +60,29 @@ command -v go &> /dev/null && export PATH=$PATH:$(go env GOPATH)/bin
 
 # iTerm2 shell integration
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+# Synced repos: dotfiles (.zshrc, iTerm2 prefs) and private Copilot skills
+DOTFILES_DIR="${${:-$HOME/.zshrc}:A:h}"
+SYNCED_REPOS=("$DOTFILES_DIR" "$HOME/copilot-skills")
+
+# Startup reminder; local-only checks (no fetch) so it stays fast
+for _repo in $SYNCED_REPOS; do
+  [ -d "$_repo/.git" ] || continue
+  _dirty=$(git -C "$_repo" status --porcelain 2>/dev/null | wc -l | tr -d ' ')
+  _ahead=$(git -C "$_repo" rev-list --count @{u}..HEAD 2>/dev/null || echo 0)
+  (( _dirty || _ahead )) && echo "⚠️  ${_repo:t}: $_dirty uncommitted, $_ahead unpushed (run dotsync)"
+done
+unset _repo _dirty _ahead
+
+# Commit, pull, and push all synced repos. Usage: dotsync ["commit message"]
+dotsync() {
+  local repo msg="${1:-Sync from $(hostname -s)}"
+  for repo in $SYNCED_REPOS; do
+    [ -d "$repo/.git" ] || continue
+    echo "🔄 ${repo:t}"
+    git -C "$repo" status --short
+    git -C "$repo" add -A
+    git -C "$repo" diff --cached --quiet || git -C "$repo" commit -qm "$msg"
+    git -C "$repo" pull --rebase --quiet && git -C "$repo" push --quiet
+  done
+}
