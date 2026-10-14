@@ -62,26 +62,25 @@ if [ "$(uname)" = "Darwin" ] && [ -f "$DOTFILES_DIR/iterm2/com.googlecode.iterm2
     echo "✅ iTerm2 preferences configured (restart iTerm2 to apply)"
 fi
 
-if [ -n "$GIST_ADDITIONAL_SETUP_URL" ] && [ -d "/workspaces/github" ]; then
-  ADDITIONAL_SETUP_DIR="$HOME/.additional-setup"
+# Private Copilot CLI skills: clone (or update) and symlink into ~/.copilot/skills
+SKILLS_REPO="git@github-personal:hectorsector/copilot-skills.git"
+SKILLS_DIR="$HOME/copilot-skills"
+echo "🧠 Installing Copilot CLI skills..."
+if [ -d "$SKILLS_DIR/.git" ]; then
+    git -C "$SKILLS_DIR" pull --ff-only --quiet || echo "⚠️  Could not update $SKILLS_DIR"
+elif ! git clone --quiet "$SKILLS_REPO" "$SKILLS_DIR" 2>/dev/null; then
+    echo "⚠️  Could not clone $SKILLS_REPO (no access?); skipping skills"
+fi
 
-  echo "➕ Cloning additional setup from gist..."
-  if gh gist clone "$GIST_ADDITIONAL_SETUP_URL" "$ADDITIONAL_SETUP_DIR" 2>/dev/null; then
-    echo "✅ Gist with additional setup cloned"
-
-    if [ -f "$ADDITIONAL_SETUP_DIR/additional-setup.sh" ]; then
-      echo "➕ Running additional setup..."
-      bash "$ADDITIONAL_SETUP_DIR/additional-setup.sh"
-      echo "✅ Additional setup completed succesfully."
-    else
-      echo "⚠️ Could not run additional setup script from gist."
+if [ -d "$SKILLS_DIR/skills" ]; then
+    mkdir -p "$HOME/.copilot"
+    if [ -d "$HOME/.copilot/skills" ] && [ ! -L "$HOME/.copilot/skills" ]; then
+        BACKUP="$HOME/.copilot/skills.backup.$(date +%Y%m%d%H%M%S)"
+        mv "$HOME/.copilot/skills" "$BACKUP"
+        echo "ℹ️  Existing ~/.copilot/skills moved to $BACKUP"
     fi
-
-  else
-    echo "⚠️ Could not run private setup, gist may not be accessible"
-  fi
-else
-  echo "ℹ️ No additional setup is available for this codespace."
+    ln -sfn "$SKILLS_DIR/skills" "$HOME/.copilot/skills"
+    echo "✅ ~/.copilot/skills symlinked"
 fi
 
 echo "✅ Dotfiles installation complete!"
