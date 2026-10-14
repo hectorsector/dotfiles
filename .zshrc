@@ -74,15 +74,43 @@ for _repo in $SYNCED_REPOS; do
 done
 unset _repo _dirty _ahead
 
+# Summarize staged changes, e.g. "Add foo skill; update .zshrc and iTerm2 settings"
+_dotsync_summary() {
+  local code file item msg part
+  local -aU added updated removed
+  git -C "$1" diff --cached --name-status --no-renames | while IFS=$'\t' read -r code file; do
+    case $file in
+      skills/*/*) item="${${file#skills/}%%/*} skill" ;;
+      iterm2/*)   item="iTerm2 settings" ;;
+      *)          item=$file ;;
+    esac
+    case $code in
+      A) added+=$item ;;
+      D) removed+=$item ;;
+      *) updated+=$item ;;
+    esac
+  done
+  updated=(${updated:|added})
+  for part in "add:added" "update:updated" "remove:removed"; do
+    local -a items=(${(P)${part#*:}})
+    (( $#items )) || continue
+    if (( $#items > 1 )); then
+      items="${(j:, :)items[1,-2]} and ${items[-1]}"
+    fi
+    msg+="${msg:+; }${part%%:*} $items"
+  done
+  echo "${(C)msg[1]}${msg[2,-1]}"
+}
+
 # Commit, pull, and push all synced repos. Usage: dotsync ["commit message"]
 dotsync() {
-  local repo msg="${1:-Sync from $(hostname -s)}"
+  local repo
   for repo in $SYNCED_REPOS; do
     [ -d "$repo/.git" ] || continue
     echo "🔄 ${repo:t}"
     git -C "$repo" status --short
     git -C "$repo" add -A
-    git -C "$repo" diff --cached --quiet || git -C "$repo" commit -qm "$msg"
+    git -C "$repo" diff --cached --quiet || git -C "$repo" commit -qm "${1:-$(_dotsync_summary "$repo")}"
     git -C "$repo" pull --rebase --quiet && git -C "$repo" push --quiet
   done
 }
