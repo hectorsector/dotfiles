@@ -61,6 +61,9 @@ command -v go &> /dev/null && export PATH=$PATH:$(go env GOPATH)/bin
 # iTerm2 shell integration
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
+# Machine-specific config (e.g. work); untracked, silently skipped if absent
+[ -r "$HOME/.zshrc.work" ] && source "$HOME/.zshrc.work"
+
 # Synced repos: dotfiles (.zshrc, iTerm2 prefs) and private Copilot skills
 DOTFILES_DIR="${${:-$HOME/.zshrc}:A:h}"
 SYNCED_REPOS=("$DOTFILES_DIR" "$HOME/copilot-skills")
