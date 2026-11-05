@@ -117,3 +117,8 @@ dotsync() {
     git -C "$repo" pull --rebase --quiet && git -C "$repo" push --quiet
   done
 }
+# The following lines have been added by Docker Desktop to enable Docker CLI completions.
+fpath=(/Users/halfaro/.docker/completions $fpath)
+autoload -Uz compinit
+(( ${+_comps[docker]} )) || compinit
+# End of Docker CLI completions

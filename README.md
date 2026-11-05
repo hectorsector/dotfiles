@@ -6,7 +6,7 @@ Personal shell configuration for keeping my macOS dev environment in sync across
 
 - **Zsh Configuration** (`.zshrc`) - Shell preferences, tool integrations, and environment setup
 - **iTerm2 Shell Integration** - I use it for command navigation with keyboard shortcuts (`⌘⇧↑`/`⌘⇧↓`)
-- **Copilot CLI Skills** - clones my private `copilot-skills` repo to `~/copilot-skills` and symlinks `~/.copilot/skills` to it (skipped if the repo isn't accessible)
+- **Agent instructions** - clones my private `agent-instructions` repo to `~/hectorsector/agent-instructions`, symlinks `~/.copilot/skills` to its skills and `~/.copilot/copilot-instructions.md` to its shared instructions, and imports its Claude Code instructions from `~/.claude/CLAUDE.md` (skipped if the repo isn't accessible)
 - **Automatic Installation** - run `./install.sh`
 
 ## Tools & Integrations

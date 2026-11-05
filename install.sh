@@ -62,14 +62,30 @@ if [ "$(uname)" = "Darwin" ] && [ -f "$DOTFILES_DIR/iterm2/com.googlecode.iterm2
     echo "✅ iTerm2 preferences configured (restart iTerm2 to apply)"
 fi
 
-# Private Copilot CLI skills: clone (or update) and symlink into ~/.copilot/skills
-SKILLS_REPO="git@github-personal:hectorsector/copilot-skills.git"
-SKILLS_DIR="$HOME/copilot-skills"
-echo "🧠 Installing Copilot CLI skills..."
-if [ -d "$SKILLS_DIR/.git" ]; then
-    git -C "$SKILLS_DIR" pull --ff-only --quiet || echo "⚠️  Could not update $SKILLS_DIR"
-elif ! git clone --quiet "$SKILLS_REPO" "$SKILLS_DIR" 2>/dev/null; then
-    echo "⚠️  Could not clone $SKILLS_REPO (no access?); skipping skills"
+# Private agent instructions (skills + Claude Code instructions): clone (or update),
+# symlink ~/.copilot/skills and ~/.copilot/copilot-instructions.md, and import
+# claude/CLAUDE.md from ~/.claude/CLAUDE.md
+AGENT_REPO="git@github-personal:hectorsector/agent-instructions.git"
+AGENT_DIR="$HOME/hectorsector/agent-instructions"
+SKILLS_DIR="$AGENT_DIR"
+echo "🧠 Installing private agent instructions..."
+if [ -d "$AGENT_DIR/.git" ]; then
+    git -C "$AGENT_DIR" pull --ff-only --quiet || echo "⚠️  Could not update $AGENT_DIR"
+else
+    mkdir -p "$(dirname "$AGENT_DIR")"
+    if ! git clone --quiet "$AGENT_REPO" "$AGENT_DIR" 2>/dev/null; then
+        echo "⚠️  Could not clone $AGENT_REPO (no access?); skipping agent instructions"
+    fi
+fi
+
+if [ -f "$AGENT_DIR/claude/CLAUDE.md" ]; then
+    CLAUDE_IMPORT="@~/hectorsector/agent-instructions/claude/CLAUDE.md"
+    mkdir -p "$HOME/.claude"
+    touch "$HOME/.claude/CLAUDE.md"
+    if ! grep -qxF "$CLAUDE_IMPORT" "$HOME/.claude/CLAUDE.md"; then
+        printf '\n%s\n' "$CLAUDE_IMPORT" >> "$HOME/.claude/CLAUDE.md"
+        echo "✅ ~/.claude/CLAUDE.md imports claude/CLAUDE.md"
+    fi
 fi
 
 if [ -d "$SKILLS_DIR/skills" ]; then
@@ -81,6 +97,18 @@ if [ -d "$SKILLS_DIR/skills" ]; then
     fi
     ln -sfn "$SKILLS_DIR/skills" "$HOME/.copilot/skills"
     echo "✅ ~/.copilot/skills symlinked"
+fi
+
+if [ -f "$AGENT_DIR/shared/instructions.md" ]; then
+    mkdir -p "$HOME/.copilot"
+    COPILOT_INSTRUCTIONS="$HOME/.copilot/copilot-instructions.md"
+    if [ -f "$COPILOT_INSTRUCTIONS" ] && [ ! -L "$COPILOT_INSTRUCTIONS" ]; then
+        BACKUP="$COPILOT_INSTRUCTIONS.backup.$(date +%Y%m%d%H%M%S)"
+        mv "$COPILOT_INSTRUCTIONS" "$BACKUP"
+        echo "ℹ️  Existing ~/.copilot/copilot-instructions.md moved to $BACKUP"
+    fi
+    ln -sfn "$AGENT_DIR/shared/instructions.md" "$COPILOT_INSTRUCTIONS"
+    echo "✅ ~/.copilot/copilot-instructions.md symlinked"
 fi
 
 echo "✅ Dotfiles installation complete!"
