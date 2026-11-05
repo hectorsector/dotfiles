@@ -66,7 +66,7 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 
 # Synced repos: dotfiles (.zshrc, iTerm2 prefs) and private Copilot skills
 DOTFILES_DIR="${${:-$HOME/.zshrc}:A:h}"
-SYNCED_REPOS=("$DOTFILES_DIR" "$HOME/copilot-skills")
+SYNCED_REPOS=("$DOTFILES_DIR" "$HOME/hectorsector/agent-instructions")
 
 # Startup reminder; local-only checks (no fetch) so it stays fast
 for _repo in $SYNCED_REPOS; do
